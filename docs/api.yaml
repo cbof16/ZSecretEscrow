@@ -1,0 +1,450 @@
+openapi: 3.0.0
+info:
+  title: ZSecretEscrow API
+  description: API for the ZSecretEscrow application
+  version: 1.0.0
+  contact:
+    email: info@zescrow.example
+servers:
+  - url: http://localhost:3000
+    description: Development server
+paths:
+  /health:
+    get:
+      summary: Health check endpoint
+      description: Returns the health status of the API
+      responses:
+        '200':
+          description: API is running properly
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ok
+  /wallets:
+    post:
+      summary: Create a new wallet
+      description: Creates a new Zcash wallet for a user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - userId
+              properties:
+                userId:
+                  type: string
+                  description: The ID of the user to create a wallet for
+                  example: user123
+                label:
+                  type: string
+                  description: Optional label for the wallet
+                  example: My Main Wallet
+      responses:
+        '201':
+          description: Wallet created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Wallet'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /wallets/{userId}:
+    get:
+      summary: Get wallet information
+      description: Retrieves wallet information for a user
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The ID of the user to get the wallet for
+          example: user123
+      responses:
+        '200':
+          description: Wallet information retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Wallet'
+        '404':
+          description: Wallet not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /deals:
+    post:
+      summary: Create a new deal
+      description: Creates a new escrow deal between a client and freelancer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - clientId
+                - freelancerId
+                - description
+                - amount
+              properties:
+                clientId:
+                  type: string
+                  description: The user ID of the client
+                  example: client123
+                freelancerId:
+                  type: string
+                  description: The user ID of the freelancer
+                  example: freelancer456
+                description:
+                  type: string
+                  description: Description of the work to be done
+                  example: Create a logo for my new company
+                amount:
+                  type: number
+                  format: float
+                  description: Amount in ZEC
+                  example: 1.5
+                deadlineDays:
+                  type: integer
+                  description: Number of days until the deadline
+                  example: 14
+      responses:
+        '201':
+          description: Deal created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Deal'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /deals/{dealId}:
+    get:
+      summary: Get deal information
+      description: Retrieves information about a specific deal
+      parameters:
+        - name: dealId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The ID of the deal
+          example: deal-123456
+      responses:
+        '200':
+          description: Deal information retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Deal'
+        '404':
+          description: Deal not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /users/{userId}/deals:
+    get:
+      summary: Get deals for a user
+      description: Retrieves all deals associated with a user (as client or freelancer)
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The ID of the user
+          example: user123
+      responses:
+        '200':
+          description: Deals retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Deal'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /deals/{dealId}/submit:
+    post:
+      summary: Submit work for a deal
+      description: Freelancer submits work for client review
+      parameters:
+        - name: dealId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The ID of the deal
+          example: deal-123456
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - userId
+                - workSubmission
+              properties:
+                userId:
+                  type: string
+                  description: The user ID of the freelancer
+                  example: freelancer456
+                workSubmission:
+                  type: string
+                  description: Link to the submitted work
+                  example: https://example.com/work
+                notes:
+                  type: string
+                  description: Additional notes about the submission
+                  example: Completed all requirements
+      responses:
+        '200':
+          description: Work submitted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Deal'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /deals/{dealId}/approve:
+    post:
+      summary: Approve submitted work
+      description: Client approves the work and releases funds to freelancer
+      parameters:
+        - name: dealId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The ID of the deal
+          example: deal-123456
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - userId
+              properties:
+                userId:
+                  type: string
+                  description: The user ID of the client
+                  example: client123
+      responses:
+        '200':
+          description: Work approved and payment released
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Deal'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /deals/{dealId}/dispute:
+    post:
+      summary: Dispute submitted work
+      description: Client disputes the submitted work
+      parameters:
+        - name: dealId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The ID of the deal
+          example: deal-123456
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - userId
+                - reason
+              properties:
+                userId:
+                  type: string
+                  description: The user ID of the client
+                  example: client123
+                reason:
+                  type: string
+                  description: Reason for the dispute
+                  example: Work doesn't match the requirements
+      responses:
+        '200':
+          description: Work disputed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Deal'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    Wallet:
+      type: object
+      properties:
+        id:
+          type: string
+          example: wallet-123xyz
+        userId:
+          type: string
+          example: user123
+        addresses:
+          type: object
+          properties:
+            transparent:
+              type: string
+              example: t1Zo6TcsCmPVhyTNq8fvYHceS5ENhe6f59k
+            shielded:
+              type: string
+              example: zs1z7rejlpsa98s2rrrfkwmaxu6ydse5xmnwdtjh2q79ayxkmvs6jz6m4n8hnshr8gkah97aehj03
+        balance:
+          type: object
+          properties:
+            transparent:
+              type: number
+              example: 0.5
+            shielded:
+              type: number
+              example: 1.25
+            total:
+              type: number
+              example: 1.75
+    Deal:
+      type: object
+      properties:
+        dealId:
+          type: string
+          example: deal-123456
+        client:
+          type: object
+          properties:
+            id:
+              type: string
+              example: client123
+            nearAccountId:
+              type: string
+              example: near-client.testnet
+        freelancer:
+          type: object
+          properties:
+            id:
+              type: string
+              example: freelancer456
+            nearAccountId:
+              type: string
+              example: near-freelancer.testnet
+        amount:
+          type: string
+          example: "1.5"
+        amountZec:
+          type: number
+          example: 1.5
+        deadline:
+          type: integer
+          example: 1653532800000
+        description:
+          type: string
+          example: Create a logo for my new company
+        status:
+          type: string
+          enum: [created, submitted, completed, disputed, cancelled]
+          example: created
+        proofLink:
+          type: string
+          example: https://example.com/work
+        notes:
+          type: string
+          example: Work completed as requested
+        intentId:
+          type: string
+          example: intent-789012
+        createdAt:
+          type: integer
+          example: 1652932800000
+        updatedAt:
+          type: integer
+          example: 1653132800000
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Something went wrong 

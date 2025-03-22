@@ -1,21 +1,39 @@
 {
   "name": "zsecretescrow",
-  "version": "1.0.0",
+  "version": "0.1.0",
+  "description": "ZSecretEscrow - A private escrow system built on Zcash",
+  "main": "index.js",
   "scripts": {
-    "dev": "cd web && pnpm dev",
-    "build": "cd web && pnpm build",
-    "start": "cd web && pnpm start",
-    "install:all": "pnpm install && cd web && pnpm install"
+    "deploy:zecvault": "node src/scripts/deploy_zecvault.js",
+    "deploy:escrow-intent": "node src/scripts/deploy_escrow_intent.js",
+    "start:zcash-monitor": "node src/services/zcash_monitor.js",
+    "example": "node src/examples/contracts_usage.js",
+    "init-db": "node src/database/init-db.js",
+    "start": "node src/index.js",
+    "start:api": "node src/api/server.js",
+    "deploy": "node src/scripts/deploy.js",
+    "test": "mocha src/test/**/*.test.js"
   },
+  "keywords": [
+    "zcash",
+    "escrow",
+    "ethereum",
+    "near",
+    "privacy"
+  ],
+  "author": "",
+  "license": "MIT",
   "dependencies": {
-    "next": "^14.1.4",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "body-parser": "^1.20.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "ethers": "^6.8.1",
+    "express": "^4.18.2",
+    "near-api-js": "^2.1.4",
+    "sqlite3": "^5.1.6"
   },
   "devDependencies": {
-    "@types/node": "^20.11.30",
-    "@types/react": "^18.2.67",
-    "@types/react-dom": "^18.2.22",
-    "typescript": "^5.4.2"
+    "chai": "^4.3.7",
+    "mocha": "^10.2.0"
   }
 }

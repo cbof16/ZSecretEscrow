@@ -6,7 +6,15 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        teal: "#008080"
+        navy: {
+          light: "#1a2348",
+          DEFAULT: "#0f172a",
+          dark: "#0a0f1d"
+        },
+        accent: {
+          blue: "#6366f1",
+          purple: "#8866ff"
+        }
       }
     }
   },
