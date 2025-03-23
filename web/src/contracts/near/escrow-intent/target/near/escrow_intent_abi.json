@@ -1,0 +1,44 @@
+{
+  "schema_version": "0.4.0",
+  "metadata": {
+    "name": "escrow_intent",
+    "version": "0.1.0",
+    "authors": [
+      "ZSecretEscrow <info@zsecretescrow.com>"
+    ],
+    "build": {
+      "compiler": "rustc 1.85.1",
+      "builder": "cargo-near cargo-near-build 0.4.4"
+    },
+    "wasm_hash": "A3usznizhaWozEEBYN2Lzy5Cq47ieAnMCcXr2Hudvsb2"
+  },
+  "body": {
+    "functions": [
+      {
+        "name": "contract_source_metadata",
+        "kind": "view"
+      },
+      {
+        "name": "get_count",
+        "kind": "view",
+        "result": {
+          "serialization_type": "json",
+          "type_schema": {
+            "type": "integer",
+            "format": "uint64",
+            "minimum": 0.0
+          }
+        }
+      },
+      {
+        "name": "increment",
+        "kind": "call"
+      }
+    ],
+    "root_schema": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "String",
+      "type": "string"
+    }
+  }
+}

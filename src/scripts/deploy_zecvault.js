@@ -43,8 +43,8 @@ async function deployZecVault() {
     const abi = contractJson.abi;
     const bytecode = contractJson.bytecode.object;
 
-    // Setup provider and wallet
-    const provider = new ethers.providers.JsonRpcProvider(BASE_SEPOLIA_RPC_URL);
+    // Setup provider and wallet - updated for ethers v6
+    const provider = new ethers.JsonRpcProvider(BASE_SEPOLIA_RPC_URL);
     const wallet = new ethers.Wallet(PRIVATE_KEY, provider);
     const walletAddress = await wallet.getAddress();
 
@@ -52,31 +52,32 @@ async function deployZecVault() {
 
     // Check wallet balance
     const balance = await provider.getBalance(walletAddress);
-    console.log(`Wallet balance: ${ethers.utils.formatEther(balance)} ETH`);
+    console.log(`Wallet balance: ${ethers.formatEther(balance)} ETH`);
 
-    if (balance.lt(ethers.utils.parseEther('0.01'))) {
+    if (balance < ethers.parseEther('0.01')) {
       console.warn('Warning: Low balance. You might need more ETH to deploy.');
     }
 
-    // Deploy contract
+    // Deploy contract - updated for ethers v6
     const ContractFactory = new ethers.ContractFactory(abi, bytecode, wallet);
     const contract = await ContractFactory.deploy();
-
-    console.log(`Transaction hash: ${contract.deployTransaction.hash}`);
+    
+    console.log(`Transaction hash: ${contract.deploymentTransaction().hash}`);
     console.log('Waiting for contract deployment...');
     
-    await contract.deployed();
+    await contract.waitForDeployment();
+    const contractAddress = await contract.getAddress();
     
     console.log('ZecVault contract deployed successfully!');
-    console.log(`Contract address: ${contract.address}`);
+    console.log(`Contract address: ${contractAddress}`);
 
     // Save deployment info to a file
     const deploymentInfo = {
       network: 'base-sepolia',
-      contractAddress: contract.address,
+      contractAddress: contractAddress,
       deployedBy: walletAddress,
       deploymentTime: new Date().toISOString(),
-      transactionHash: contract.deployTransaction.hash
+      transactionHash: contract.deploymentTransaction().hash
     };
 
     const deploymentPath = path.join(__dirname, '../../deployments');

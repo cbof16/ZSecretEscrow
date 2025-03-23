@@ -16,10 +16,11 @@ require('dotenv').config();
 const NEAR_NETWORK = process.env.NEAR_NETWORK || 'testnet';
 const ACCOUNT_ID = process.env.NEAR_ACCOUNT_ID;
 const PRIVATE_KEY = process.env.NEAR_PRIVATE_KEY;
-const CONTRACT_NAME = process.env.NEAR_CONTRACT_NAME || `escrow-intent-${Date.now()}.${ACCOUNT_ID}`;
+// We'll use the main account for deployment now
+const CONTRACT_NAME = ACCOUNT_ID;
 
 // Paths
-const WASM_PATH = path.join(__dirname, '../../out/escrow_intent.wasm');
+const WASM_PATH = path.join(__dirname, '../../build/near/escrow_intent.wasm');
 
 /**
  * Deploy the EscrowIntent contract to NEAR testnet
@@ -67,37 +68,26 @@ async function deployEscrowIntent() {
     const account = await near.account(ACCOUNT_ID);
 
     console.log(`Deploying from account: ${ACCOUNT_ID}`);
-    console.log(`Contract will be deployed at: ${CONTRACT_NAME}`);
+    console.log(`Contract will be deployed to the same account: ${CONTRACT_NAME}`);
 
     // Check account balance
     const balance = await account.getAccountBalance();
     console.log(`Account balance: ${nearAPI.utils.format.formatNearAmount(balance.available)} NEAR`);
 
-    // Create contract account if it doesn't exist
-    try {
-      console.log('Creating contract account...');
-      await account.createAccount(
-        CONTRACT_NAME,
-        keyPair.getPublicKey(),
-        nearAPI.utils.format.parseNearAmount('5') // Initial balance for the contract account
-      );
-      console.log('Contract account created successfully');
-    } catch (error) {
-      console.log('Contract account already exists or could not be created:', error.message);
-      // Continue anyway as the account might already exist
+    if (parseFloat(nearAPI.utils.format.formatNearAmount(balance.available)) < 5) {
+      console.warn('Warning: Low balance. You might need more NEAR to deploy.');
     }
 
-    // Deploy contract
+    // Deploy contract directly to the main account
     console.log('Deploying contract...');
     try {
-      const contractAccount = await near.account(CONTRACT_NAME);
-      const deployResult = await contractAccount.deployContract(wasmFileBuffer);
+      const deployResult = await account.deployContract(wasmFileBuffer);
       
       console.log('Contract deployed successfully!');
       
       // Initialize the contract
       console.log('Initializing contract...');
-      await contractAccount.functionCall({
+      await account.functionCall({
         contractId: CONTRACT_NAME,
         methodName: 'new',
         args: { owner_id: ACCOUNT_ID },

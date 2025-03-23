@@ -24,6 +24,7 @@ The system consists of several key components:
 4. **Escrow Service**: Coordinates between blockchain components
 5. **Database**: SQLite database for storing deal and transaction information
 6. **API Server**: Exposes RESTful endpoints for client applications
+7. **Frontend**: React-based user interface for interacting with the system
 
 ## Installation
 
@@ -53,6 +54,30 @@ cp .env.example .env
 ```
 
 4. Edit the `.env` file with your configuration
+```
+# API Configuration
+API_PORT=3000
+FRONTEND_PORT=3001
+PORT=8080
+DB_PATH=./data/zescrow.db
+
+# NEAR Configuration
+NEAR_NETWORK=testnet
+NEAR_NODE_URL=https://rpc.testnet.near.org
+NEAR_ACCOUNT_ID=your-account.testnet
+NEAR_PRIVATE_KEY=ed25519:your_private_key
+ESCROW_INTENT_ID=your-account.testnet
+
+# Base Sepolia Configuration
+BASE_SEPOLIA_RPC_URL=https://sepolia.base.org
+ZECVAULT_ADDRESS=0xYourContractAddress
+PRIVATE_KEY=your_ethereum_private_key
+
+# Zcash Configuration
+ZCASH_NODE_URL=https://testnet.lightwalletd.com:9067
+ZCASH_WALLET_API_URL=http://localhost:7000
+ZCASH_MONITOR_INTERVAL=60000
+```
 
 5. Initialize the database:
 ```bash
@@ -66,36 +91,129 @@ npm run deploy:escrow-intent
 ```
 
 ## Usage
+### Start the Complete Application
 
-### Start the API Server
-
-```bash
-npm run start:api
-```
-
-### Start the Full Application
+To run both the API server and frontend in a single command:
 
 ```bash
 npm start
 ```
 
-### API Endpoints
+Access the application at http://localhost:8080
+
+### Start Components Separately
+
+You can also run the components separately:
+
+```bash
+# Start the API Server only
+npm run start:api
+
+# Start the Frontend only
+npm run start:frontend
+
+# Start the Zcash transaction monitor
+npm run start:zcash-monitor
+```
+
+### API Documentation
+
+#### Health Check
+- `GET /api/health` - Check API server status
 
 #### Wallets
-- `POST /wallets` - Create a new wallet
-- `GET /wallets/:userId` - Get wallet information
+- `POST /api/wallets` - Create a new wallet
+  - Request body: `{ "userId": "user123" }`
+  - Response: `{ "id": 1, "userId": "user123", "address": "zs1...", "blockchain": "zcash" }`
+
+- `GET /api/wallets/:userId` - Get wallet information
+  - Response: `{ "id": 1, "user_id": "user123", "address": "zs1...", "blockchain": "zcash", "created_at": "..." }`
 
 #### Deals
-- `POST /deals` - Create a new deal
-- `GET /deals/:dealId` - Get deal information
-- `GET /users/:userId/deals` - Get all deals for a user
+- `POST /api/deals` - Create a new deal
+  - Request body: 
+    ```json
+    { 
+      "clientId": "client123", 
+      "freelancerId": "freelancer456", 
+      "title": "Website Development", 
+      "description": "Create a landing page", 
+      "amount": 100
+    }
+    ```
+  - Response: Deal object with status and transaction hash
+
+- `GET /api/deals/:dealId` - Get deal information
+  - Response: Complete deal object with all fields
+
+- `GET /api/users/:userId/deals` - Get all deals for a user
+  - Response: Array of deal objects for the specified user (as client or freelancer)
 
 #### Work Submission/Approval
-- `POST /deals/:dealId/submit` - Submit work for review
-- `POST /deals/:dealId/approve` - Approve submitted work
-- `POST /deals/:dealId/dispute` - Dispute submitted work
+- `POST /api/deals/:dealId/submit` - Submit work for review
+  - Request body: 
+    ```json
+    { 
+      "workUrl": "https://github.com/user/project", 
+      "comments": "Completed as requested" 
+    }
+    ```
+  - Response: Confirmation with updated deal status
+
+- `POST /api/deals/:dealId/approve` - Approve submitted work
+  - Request body: 
+    ```json
+    { 
+      "reviewComments": "Work looks good!" 
+    }
+    ```
+  - Response: Confirmation with transaction hash
+
+- `POST /api/deals/:dealId/dispute` - Dispute submitted work
+  - Request body: 
+    ```json
+    { 
+      "disputeReason": "Work does not meet requirements" 
+    }
+    ```
+  - Response: Confirmation with updated deal status
+
+#### Counter (Test Endpoints)
+- `GET /api/counter` - Get counter value
+  - Response: `{ "count": 3 }`
+
+- `POST /api/counter/increment` - Increment counter
+  - Response: Confirmation with transaction hash
 
 ## Development
+
+### Database Schema
+
+The application uses SQLite with the following tables:
+
+1. **wallets**
+   - id (PRIMARY KEY)
+   - user_id
+   - address
+   - blockchain
+   - created_at
+
+2. **deals**
+   - id (PRIMARY KEY)
+   - client_id
+   - freelancer_id
+   - title
+   - description
+   - amount
+   - intent_id
+   - eth_escrow_id
+   - status
+   - work_url
+   - submission_comments
+   - review_comments
+   - dispute_reason
+   - created_at
+   - updated_at
 
 ### Testing
 
@@ -109,6 +227,10 @@ npm run example
 ```bash
 npm run start:zcash-monitor
 ```
+
+## For more detailed setup instructions
+
+See [SETUP.md](SETUP.md) for more detailed setup and configuration instructions.
 
 ## License
 
