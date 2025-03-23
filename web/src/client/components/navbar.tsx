@@ -1,13 +1,16 @@
 "use client"
 
+import React from 'react'
 import { motion } from "framer-motion"
-import { Shield, Wallet, Menu, X } from "lucide-react"
+import { Shield, Wallet, Menu, X, User } from "lucide-react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
+import { useWallet } from '@/lib/wallet-context'
 
 export function Navbar() {
+  const { isAuthenticated, primaryWallet, disconnectAll, isDemo } = useWallet()
   const pathname = usePathname()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   
@@ -21,12 +24,19 @@ export function Navbar() {
     <motion.nav 
       initial={{ y: -20, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
-      className="fixed w-full z-50 top-0 left-0 right-0 glass-card border-b border-white/10"
+      className={`fixed w-full z-50 top-0 left-0 right-0 glass-card border-b border-white/10 ${pathname === '/' ? 'bg-transparent' : 'bg-navy-dark/80 backdrop-blur-md'}`}
     >
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
         <Link href="/" className="flex items-center space-x-2">
           <Shield className="w-8 h-8 text-accent-blue" />
-          <span className="text-xl font-bold">ZSecretEscrow</span>
+          <span className="text-xl font-bold relative">
+            ZSecretEscrow
+            {isDemo && (
+              <span className="absolute -top-2 -right-12 text-[9px] font-medium bg-yellow-500/30 text-yellow-300 px-1.5 py-0.5 rounded-sm">
+                DEMO MODE
+              </span>
+            )}
+          </span>
         </Link>
 
         {/* Desktop Navigation */}
