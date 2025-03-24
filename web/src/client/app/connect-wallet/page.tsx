@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
@@ -14,57 +14,26 @@ import {
   ChevronRight,
   Loader2,
   CheckCircle2,
-  Clock,
-  BadgeInfo,
-  Check,
-  ArrowRight,
-  AlertTriangle
+  TestTube2,
+  Clock
 } from 'lucide-react'
-import Image from 'next/image'
 
 // Wallet provider information
 const WalletProviders = [
-  { 
-    id: 'zcash-demo', 
-    name: 'Demo Wallet', 
-    icon: '/images/zcash-logo.png', 
-    primary: true, 
-    isDemo: true,
-    description: 'Use a simulated wallet for testing and development purposes.'
-  },
-  { 
-    id: 'zcash-ywallet', 
-    name: 'Y Wallet', 
-    icon: '/images/ywallet-logo.png', 
-    comingSoon: true,
-    description: 'A comprehensive Zcash wallet for mobile and desktop with shielded transactions support.'
-  },
-  { 
-    id: 'zcash-zingo', 
-    name: 'Zingo Wallet', 
-    icon: '/images/zingo-logo.png', 
-    comingSoon: true,
-    description: 'A full-featured Zcash wallet with user-friendly interface for Android, iOS, and desktop.'
-  },
-  { 
-    id: 'zcash-zashi', 
-    name: 'Zashi Wallet', 
-    icon: '/images/zashi-logo.png', 
-    comingSoon: true,
-    description: 'The official ECC Zcash wallet with enhanced privacy features and intuitive design.'
-  },
+  { id: 'zcash', name: 'Demo Wallet (Zcash)', icon: 'Z', primary: true, isDemo: true },
+  { id: 'ywallet', name: 'Y Wallet', icon: 'Y', disabled: true, comingSoon: true },
+  { id: 'zingo', name: 'Zingo Wallet', icon: 'ZG', disabled: true, comingSoon: true },
+  { id: 'zashi', name: 'Zashi', icon: 'ZS', disabled: true, comingSoon: true },
   { id: 'ethereum', name: 'MetaMask', icon: 'ETH', disabled: true },
   { id: 'near', name: 'NEAR', icon: 'N', disabled: true },
-  { id: 'base', name: 'Base Wallet', icon: 'B', disabled: true },
 ]
 
 export default function ConnectWalletPage() {
   const router = useRouter()
-  const { connectWallet, isConnecting, isAuthenticated, error } = useWallet()
-  const [selectedWallet, setSelectedWallet] = useState<string | null>(null)
+  const { connectWallet, isConnecting, isAuthenticated, error, isDemo } = useWallet()
+  const [selectedWallet, setSelectedWallet] = useState<string | null>('zcash') // Default to demo wallet
   const [connectionStatus, setConnectionStatus] = useState<'idle' | 'connecting' | 'connected' | 'error'>('idle')
   const [errorMessage, setErrorMessage] = useState('')
-  const [connecting, setConnecting] = useState(false)
 
   // Check if already authenticated
   useEffect(() => {
@@ -84,33 +53,24 @@ export default function ConnectWalletPage() {
   }, [isConnecting, error])
 
   const handleSelectWallet = (walletId: string) => {
-    const wallet = WalletProviders.find(w => w.id === walletId)
-    if (wallet && !wallet.disabled && !wallet.comingSoon) {
-      setSelectedWallet(walletId)
-      setConnectionStatus('idle')
-      setErrorMessage('')
-    }
+    setSelectedWallet(walletId)
+    setConnectionStatus('idle')
+    setErrorMessage('')
   }
 
   const handleConnectWallet = async () => {
-    if (!selectedWallet) {
-      setErrorMessage('Please select a wallet provider')
-      return
-    }
+    if (!selectedWallet) return
     
-    // Check if it's a "coming soon" wallet
-    const walletProvider = WalletProviders.find(w => w.id === selectedWallet)
-    if (walletProvider?.comingSoon) {
-      setErrorMessage(`${walletProvider.name} integration is coming soon. Please use the Demo Wallet for now.`)
-      return
-    }
-    
-    setConnecting(true)
+    setConnectionStatus('connecting')
     setErrorMessage('')
     
     try {
       console.log('Attempting to connect wallet:', selectedWallet)
-      await connectWallet(selectedWallet as WalletType)
+      if (selectedWallet === 'zcash') {
+        await connectWallet('zcash')
+      } else {
+        throw new Error('This wallet implementation is coming soon')
+      }
       console.log('Wallet connected successfully')
       setConnectionStatus('connected')
       
@@ -122,7 +82,6 @@ export default function ConnectWalletPage() {
       console.error('Connect wallet error:', error)
       setConnectionStatus('error')
       setErrorMessage(error.message || 'Failed to connect wallet')
-      setConnecting(false)
     }
   }
 
@@ -136,7 +95,7 @@ export default function ConnectWalletPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="text-center mb-12"
+            className="text-center mb-8"
           >
             <h1 className="text-3xl md:text-4xl font-bold mb-4">
               Connect Your Wallet
@@ -144,18 +103,10 @@ export default function ConnectWalletPage() {
             <p className="text-gray-300 max-w-xl mx-auto">
               Connect your cryptocurrency wallet to start using ZSecretEscrow's secure and private escrow services.
             </p>
-          </motion.div>
-          
-          {/* Demo Mode Banner */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5, delay: 0.1 }}
-            className="mb-6 p-4 border border-yellow-500/30 bg-yellow-500/10 rounded-lg flex items-center gap-3"
-          >
-            <AlertTriangle className="w-5 h-5 text-yellow-400 flex-shrink-0" />
-            <div className="text-sm text-yellow-200">
-              <span className="font-medium">Hackathon Demo Mode:</span> For this demo, use our Demo Wallet to experience the platform. Real wallet integrations coming soon.
+            
+            <div className="inline-flex items-center mt-4 bg-purple-900/30 text-purple-300 px-3 py-1.5 rounded-full text-sm border border-purple-600/50">
+              <TestTube2 className="w-4 h-4 mr-1.5" />
+              <span>Demo Mode Active</span>
             </div>
           </motion.div>
           
@@ -168,7 +119,7 @@ export default function ConnectWalletPage() {
             <div className="mb-6">
               <h2 className="text-xl font-semibold mb-2">Select a Wallet</h2>
               <p className="text-gray-300 text-sm">
-                Connect with your preferred wallet to access the platform.
+                For this demo, use our simulated wallet for testing. Real wallet integrations coming soon.
               </p>
             </div>
             
@@ -177,55 +128,47 @@ export default function ConnectWalletPage() {
                 <div
                   key={wallet.id}
                   className={`p-4 rounded-lg border cursor-pointer transition-all hover-lift ${
-                    wallet.disabled || wallet.comingSoon
+                    wallet.disabled 
                       ? 'opacity-60 cursor-not-allowed border-white/10'
                       : selectedWallet === wallet.id 
                         ? 'border-accent-blue bg-accent-blue/10' 
                         : 'border-white/10 hover:border-white/20'
                   }`}
-                  onClick={() => (!wallet.disabled && !wallet.comingSoon) && handleSelectWallet(wallet.id)}
+                  onClick={() => !wallet.disabled && handleSelectWallet(wallet.id)}
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-4">
                       <div className={`w-10 h-10 rounded-full flex items-center justify-center text-xl ${
-                        wallet.id.includes('zcash') ? 'bg-[#F4B728] text-black' :
+                        wallet.id === 'zcash' ? 'bg-[#F4B728] text-black' :
+                        wallet.id === 'ywallet' ? 'bg-[#6A8FFF] text-white' :
+                        wallet.id === 'zingo' ? 'bg-[#1A4C71] text-white' :
+                        wallet.id === 'zashi' ? 'bg-[#6741D9] text-white' :
                         wallet.id === 'ethereum' ? 'bg-[#627EEA] text-white' :
                         wallet.id === 'near' ? 'bg-black text-white' :
-                        wallet.id === 'base' ? 'bg-[#0052FF] text-white' :
                         'bg-gray-800 text-white'
                       }`}>
-                        <Image 
-                          src={wallet.icon} 
-                          alt={wallet.name} 
-                          width={28} 
-                          height={28}
-                          className={wallet.comingSoon ? 'opacity-50' : ''}
-                        />
+                        {wallet.icon}
                       </div>
                       <div>
-                        <div className="font-medium flex items-center gap-2">
+                        <div className="font-medium flex items-center">
                           {wallet.name}
                           {wallet.isDemo && (
-                            <span className="text-xs px-1.5 py-0.5 bg-yellow-500/20 text-yellow-400 rounded-sm">
+                            <span className="ml-2 text-xs py-0.5 px-1.5 bg-purple-800/60 text-purple-200 rounded-sm">
                               DEMO
                             </span>
                           )}
                         </div>
                         {wallet.primary && (
-                          <div className="text-xs text-accent-blue">Recommended for demo</div>
+                          <div className="text-xs text-accent-blue">Recommended for testing</div>
                         )}
                         {wallet.comingSoon && (
-                          <div className="text-xs text-gray-400 flex items-center gap-1">
-                            <Clock className="w-3 h-3" /> Coming soon
+                          <div className="text-xs text-amber-400 flex items-center">
+                            <Clock className="w-3 h-3 mr-1" />
+                            Coming soon
                           </div>
                         )}
-                        {wallet.disabled && (
+                        {wallet.disabled && !wallet.comingSoon && (
                           <div className="text-xs text-gray-400">Coming soon</div>
-                        )}
-                        {wallet.description && (
-                          <div className="text-xs text-gray-400 mt-1 max-w-[280px]">
-                            {wallet.description}
-                          </div>
                         )}
                       </div>
                     </div>
@@ -259,7 +202,7 @@ export default function ConnectWalletPage() {
                 ) : (
                   <>
                     <Wallet className="w-4 h-4" />
-                    Connect {selectedWallet?.includes('demo') ? 'Demo ' : ''}Wallet
+                    Connect Demo Wallet
                   </>
                 )}
               </Button>
@@ -277,6 +220,33 @@ export default function ConnectWalletPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
+            className="glass-card p-6 mb-6"
+          >
+            <div className="flex items-start gap-4">
+              <div className="p-2 rounded-full bg-purple-500/20 text-purple-400">
+                <TestTube2 className="w-5 h-5" />
+              </div>
+              <div>
+                <h3 className="font-medium mb-1">Demo Mode Information</h3>
+                <p className="text-sm text-gray-300 mb-3">
+                  This demo uses a simulated Zcash wallet for demonstration purposes. No real blockchain transactions will be made.
+                </p>
+                <div className="text-sm text-gray-400">
+                  <p>Upcoming wallet implementations:</p>
+                  <ul className="list-disc ml-5 mt-1 space-y-1">
+                    <li>Y Wallet - Browser extension for Zcash</li>
+                    <li>Zingo Wallet - Desktop & mobile wallet</li>
+                    <li>Zashi - Mobile wallet for Zcash</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+          
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.3 }}
             className="glass-card p-6"
           >
             <div className="flex items-start gap-4">

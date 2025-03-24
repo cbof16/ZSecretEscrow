@@ -215,7 +215,7 @@ export default function LandingPage() {
       </section>
       
       {/* How It Works Section */}
-      <section className="py-20 px-4 bg-navy-dark/50">
+      <section className="py-20 px-4 bg-slate-900/50" id="how-it-works">
         <div className="container mx-auto max-w-6xl">
           <div className="text-center mb-16">
             <motion.div
@@ -287,51 +287,51 @@ export default function LandingPage() {
       </section>
       
       {/* Benefits Section */}
-      <section className="py-20 px-4">
+      <section className="py-20 px-4" id="benefits">
         <div className="container mx-auto max-w-6xl">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          <div className="text-center mb-16">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+              viewport={{ once: true }}
+            >
+              <span className="inline-block px-3 py-1 rounded-full bg-accent-blue/10 text-accent-blue text-sm font-medium mb-4">
+                Why Choose Us
+              </span>
+              <h2 className="text-3xl md:text-4xl font-bold mb-4">
+                Benefits of Using ZSecretEscrow
+              </h2>
+              <p className="text-gray-300 max-w-2xl mx-auto">
+                Our platform provides unique advantages for both clients and freelancers with cutting-edge blockchain technology.
+              </p>
+            </motion.div>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               whileInView={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5 }}
               viewport={{ once: true }}
+              className="glass-card p-6"
             >
-              <div className="mb-6">
-                <span className="inline-block px-3 py-1 rounded-full bg-accent-blue/10 text-accent-blue text-sm font-medium mb-4">
-                  Benefits
-                </span>
-                <h2 className="text-3xl md:text-4xl font-bold mb-4">
-                  Transact with Confidence
-                </h2>
-                <p className="text-gray-300">
-                  ZSecretEscrow provides a trustless environment for conducting business with unknown parties. Our platform ensures that your funds are secure and your privacy is protected.
-                </p>
-              </div>
-              
-              <div className="space-y-4 mt-8">
+              <h3 className="text-xl font-semibold mb-4">For Clients</h3>
+              <ul className="space-y-3">
                 {[
-                  "No need to trust unknown counterparties",
-                  "Funds are released only when conditions are met",
-                  "Your personal identity remains private",
-                  "Transparent fee structure with no hidden costs",
-                  "Seamless integration with multiple blockchain networks",
-                  "Fair dispute resolution process"
-                ].map((benefit, index) => (
-                  <motion.div
-                    key={index}
-                    className="flex items-start gap-3"
-                    initial={{ opacity: 0, y: 10 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.3, delay: index * 0.1 }}
-                    viewport={{ once: true }}
-                  >
-                    <div className="mt-1 w-5 h-5 rounded-full bg-accent-blue/20 flex items-center justify-center flex-shrink-0">
-                      <Check className="w-3 h-3 text-accent-blue" />
-                    </div>
-                    <p>{benefit}</p>
-                  </motion.div>
+                  "Protect your funds until work is successfully completed",
+                  "Maintain privacy with shielded transactions",
+                  "Define clear milestones and delivery requirements",
+                  "Eliminate payment fraud and disputes",
+                  "Access a global talent pool without currency concerns",
+                  "No intermediary fees - pay only for the work"
+                ].map((benefit, idx) => (
+                  <li key={idx} className="flex items-start gap-2">
+                    <Check className="min-w-5 h-5 text-accent-blue mt-0.5" />
+                    <span>{benefit}</span>
+                  </li>
                 ))}
-              </div>
+              </ul>
             </motion.div>
             
             <motion.div
@@ -339,51 +339,68 @@ export default function LandingPage() {
               whileInView={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5 }}
               viewport={{ once: true }}
-              className="hidden lg:block"
+              className="glass-card p-6"
             >
-              <div className="glass-card border-accent-purple/20 p-6 shadow-glow-purple">
-                <div className="space-y-5">
-                  <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-full bg-accent-blue/10 flex items-center justify-center">
-                      <Shield className="w-6 h-6 text-accent-blue" />
-                    </div>
-                    <div>
-                      <h3 className="font-semibold text-lg">Secure Funds</h3>
-                      <p className="text-sm text-gray-300">10,000+ successful transactions</p>
-                    </div>
-                  </div>
-                  
-                  <div>
-                    <div className="h-1.5 bg-gray-800 rounded-full overflow-hidden mb-2">
-                      <div className="h-full bg-accent-purple rounded-full w-[92%]"></div>
-                    </div>
-                    <div className="flex justify-between text-sm">
-                      <span>Platform Security</span>
-                      <span>92%</span>
-                    </div>
-                  </div>
-                  
-                  <div>
-                    <div className="h-1.5 bg-gray-800 rounded-full overflow-hidden mb-2">
-                      <div className="h-full bg-accent-blue rounded-full w-[98%]"></div>
-                    </div>
-                    <div className="flex justify-between text-sm">
-                      <span>Privacy Protection</span>
-                      <span>98%</span>
-                    </div>
-                  </div>
-                  
-                  <div>
-                    <div className="h-1.5 bg-gray-800 rounded-full overflow-hidden mb-2">
-                      <div className="h-full bg-green-400 rounded-full w-[95%]"></div>
-                    </div>
-                    <div className="flex justify-between text-sm">
-                      <span>User Satisfaction</span>
-                      <span>95%</span>
-                    </div>
-                  </div>
+              <h3 className="text-xl font-semibold mb-4">For Freelancers</h3>
+              <ul className="space-y-3">
+                {[
+                  "Guaranteed payment for completed work",
+                  "Protect your identity and personal data",
+                  "Receive payments from anywhere in the world",
+                  "Build reputation without revealing personal information",
+                  "No platform fees taking a percentage of your earnings",
+                  "Control when and how work is delivered and approved"
+                ].map((benefit, idx) => (
+                  <li key={idx} className="flex items-start gap-2">
+                    <Check className="min-w-5 h-5 text-accent-blue mt-0.5" />
+                    <span>{benefit}</span>
+                  </li>
+                ))}
+              </ul>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+      
+      {/* Waitlist Section */}
+      <section className="py-20 px-4 bg-slate-900/30" id="waitlist">
+        <div className="container mx-auto max-w-3xl">
+          <div className="glass-card p-8 border-accent-blue/20">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+              viewport={{ once: true }}
+              className="text-center"
+            >
+              <span className="inline-block px-3 py-1 rounded-full bg-accent-blue/10 text-accent-blue text-sm font-medium mb-4">
+                Coming Soon
+              </span>
+              <h2 className="text-3xl font-bold mb-4">
+                Join the ZSecretEscrow Waitlist
+              </h2>
+              <p className="text-gray-300 mb-8">
+                The production application is launching soon! Sign up to be first in line for access and receive updates on our progress.
+              </p>
+              
+              <form className="space-y-4 max-w-md mx-auto">
+                <div>
+                  <input 
+                    type="email" 
+                    placeholder="Enter your email address" 
+                    className="input-primary"
+                    required 
+                  />
                 </div>
-              </div>
+                <div>
+                  <Button className="w-full bg-accent-blue hover:bg-accent-blue/80">
+                    Join Waitlist
+                  </Button>
+                </div>
+                <p className="text-xs text-gray-400">
+                  We respect your privacy. Your information will never be shared.
+                </p>
+              </form>
             </motion.div>
           </div>
         </div>
@@ -425,26 +442,26 @@ export default function LandingPage() {
       </section>
       
       {/* Footer */}
-      <footer className="bg-navy-dark/80 py-12 px-4">
+      <footer className="bg-slate-900/80 py-12 px-4">
         <div className="container mx-auto max-w-6xl">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div className="md:col-span-1">
               <h3 className="text-xl font-bold mb-4">ZSecretEscrow</h3>
               <p className="text-gray-400 mb-4">
                 Secure escrow services with privacy protection for cryptocurrency transactions.
               </p>
               <div className="flex gap-4">
-                <a href="#" className="text-gray-400 hover:text-accent-blue transition-colors">
+                <a href="#" className="text-gray-400 hover:text-accent-blue transition-colors" aria-label="Twitter">
                   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
                     <path d="M5.026 15c6.038 0 9.341-5.003 9.341-9.334 0-.14 0-.282-.006-.422A6.685 6.685 0 0 0 16 3.542a6.658 6.658 0 0 1-1.889.518 3.301 3.301 0 0 0 1.447-1.817 6.533 6.533 0 0 1-2.087.793A3.286 3.286 0 0 0 7.875 6.03a9.325 9.325 0 0 1-6.767-3.429 3.289 3.289 0 0 0 1.018 4.382A3.323 3.323 0 0 1 .64 6.575v.045a3.288 3.288 0 0 0 2.632 3.218 3.203 3.203 0 0 1-.865.115 3.23 3.23 0 0 1-.614-.057 3.283 3.283 0 0 0 3.067 2.277A6.588 6.588 0 0 1 .78 13.58a6.32 6.32 0 0 1-.78-.045A9.344 9.344 0 0 0 5.026 15z"/>
                   </svg>
                 </a>
-                <a href="#" className="text-gray-400 hover:text-accent-blue transition-colors">
+                <a href="#" className="text-gray-400 hover:text-accent-blue transition-colors" aria-label="GitHub">
                   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
                     <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0 0 16 8c0-4.42-3.58-8-8-8z"/>
                   </svg>
                 </a>
-                <a href="#" className="text-gray-400 hover:text-accent-blue transition-colors">
+                <a href="#" className="text-gray-400 hover:text-accent-blue transition-colors" aria-label="Discord">
                   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
                     <path d="M13.545 2.907a13.227 13.227 0 0 0-3.257-1.011.05.05 0 0 0-.052.025c-.141.25-.297.577-.406.833a12.19 12.19 0 0 0-3.658 0 8.258 8.258 0 0 0-.412-.833.051.051 0 0 0-.052-.025c-1.125.194-2.22.534-3.257 1.011a.041.041 0 0 0-.021.018C.356 6.024-.213 9.047.066 12.032c.001.014.01.028.021.037a13.276 13.276 0 0 0 3.995 2.02.05.05 0 0 0 .056-.019c.308-.42.582-.863.818-1.329a.05.05 0 0 0-.01-.059.051.051 0 0 0-.018-.011 8.875 8.875 0 0 1-1.248-.595.05.05 0 0 1-.02-.066.051.051 0 0 1 .015-.019c.084-.063.168-.129.248-.195a.05.05 0 0 1 .051-.007c2.619 1.196 5.454 1.196 8.041 0a.052.052 0 0 1 .053.007c.08.066.164.132.248.195a.051.051 0 0 1-.004.085 8.254 8.254 0 0 1-1.249.594.05.05 0 0 0-.03.03.052.052 0 0 0 .003.041c.24.465.515.909.817 1.329a.05.05 0 0 0 .056.019 13.235 13.235 0 0 0 4.001-2.02.049.049 0 0 0 .021-.037c.334-3.451-.559-6.449-2.366-9.106a.034.034 0 0 0-.02-.019Zm-8.198 7.307c-.789 0-1.438-.724-1.438-1.612 0-.889.637-1.613 1.438-1.613.807 0 1.45.73 1.438 1.613 0 .888-.637 1.612-1.438 1.612Zm5.316 0c-.788 0-1.438-.724-1.438-1.612 0-.889.637-1.613 1.438-1.613.807 0 1.451.73 1.438 1.613 0 .888-.631 1.612-1.438 1.612Z"/>
                   </svg>
@@ -455,10 +472,20 @@ export default function LandingPage() {
             <div>
               <h4 className="font-semibold mb-4">Quick Links</h4>
               <ul className="space-y-2">
-                <li><a href="#features" className="text-gray-400 hover:text-white transition-colors">Features</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">How It Works</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Pricing</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">FAQ</a></li>
+                <li><a href="/#features" className="text-gray-400 hover:text-white transition-colors">Features</a></li>
+                <li><a href="/#how-it-works" className="text-gray-400 hover:text-white transition-colors">How It Works</a></li>
+                <li><a href="/#benefits" className="text-gray-400 hover:text-white transition-colors">Benefits</a></li>
+                <li><a href="/#waitlist" className="text-gray-400 hover:text-white transition-colors">Join Waitlist</a></li>
+              </ul>
+            </div>
+            
+            <div>
+              <h4 className="font-semibold mb-4">Resources</h4>
+              <ul className="space-y-2">
+                <li><a href="/blockchain" className="text-gray-400 hover:text-white transition-colors">Blockchain</a></li>
+                <li><a href="/dashboard" className="text-gray-400 hover:text-white transition-colors">Dashboard</a></li>
+                <li><a href="/connect-wallet" className="text-gray-400 hover:text-white transition-colors">Connect Wallet</a></li>
+                <li><a href="/dashboard/deals/create" className="text-gray-400 hover:text-white transition-colors">Create Deal</a></li>
               </ul>
             </div>
             
@@ -468,13 +495,19 @@ export default function LandingPage() {
                 <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Terms of Service</a></li>
                 <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Privacy Policy</a></li>
                 <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Cookie Policy</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Contact Us</a></li>
+                <li><a href="mailto:contact@zsecretescrow.com" className="text-gray-400 hover:text-white transition-colors">Contact Us</a></li>
               </ul>
             </div>
           </div>
           
           <div className="border-t border-gray-800 mt-12 pt-8 text-center text-gray-500 text-sm">
             <p>© {new Date().getFullYear()} ZSecretEscrow. All rights reserved.</p>
+            <p className="mt-2">
+              <span className="bg-green-500/10 text-green-400 text-xs px-2 py-1 rounded-full border border-green-500/20">
+                Demo Version
+              </span>
+              <span className="ml-2 text-xs">Full release coming soon - <a href="/#waitlist" className="text-accent-blue hover:underline">Join the waitlist</a></span>
+            </p>
           </div>
         </div>
       </footer>
