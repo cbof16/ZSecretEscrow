@@ -1,144 +1,118 @@
 "use client"
 
-import React from 'react'
-import { motion } from "framer-motion"
-import { Shield, Wallet, Menu, X, User } from "lucide-react"
-import Link from "next/link"
-import { usePathname } from "next/navigation"
 import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { useWallet } from '@/lib/wallet-context'
+import Link from "next/link"
+import { useRouter } from "next/navigation"
+import { usePathname } from "next/navigation"
+import { Button } from "./ui/button"
+import { Shield, Menu, X } from "lucide-react"
+import { useWalletStore } from "../store/wallet-store"
 
 export function Navbar() {
-  const { isAuthenticated, primaryWallet, disconnectAll, isDemo } = useWallet()
-  const pathname = usePathname()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
-  
-  // Simple check if user is in dashboard pages
-  const isInDashboard = pathname?.startsWith('/dashboard')
-  
-  // Toggle mobile menu
-  const toggleMenu = () => setIsMenuOpen(!isMenuOpen)
+  const pathname = usePathname()
+  const router = useRouter()
+  const { isConnected, disconnect } = useWalletStore()
+
+  const navLinks = [
+    { href: "/", label: "Home" },
+    { href: "/blockchain", label: "Blockchain" },
+    { href: "/freelancer", label: "Freelancer Dashboard" },
+    { href: "/client", label: "Client Dashboard" },
+  ]
+
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen)
+  }
+
+  const handleWalletButton = () => {
+    if (isConnected) {
+      disconnect()
+    } else {
+      router.push("/connect-wallet")
+    }
+  }
 
   return (
-    <motion.nav 
-      initial={{ y: -20, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
-      className={`fixed w-full z-50 top-0 left-0 right-0 glass-card border-b border-white/10 ${pathname === '/' ? 'bg-transparent' : 'bg-navy-dark/80 backdrop-blur-md'}`}
-    >
-      <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-        <Link href="/" className="flex items-center space-x-2">
-          <Shield className="w-8 h-8 text-accent-blue" />
-          <span className="text-xl font-bold relative">
-            ZSecretEscrow
-            {isDemo && (
-              <span className="absolute -top-2 -right-12 text-[9px] font-medium bg-yellow-500/30 text-yellow-300 px-1.5 py-0.5 rounded-sm">
-                DEMO MODE
-              </span>
-            )}
-          </span>
-        </Link>
-
-        {/* Desktop Navigation */}
-        <div className="hidden md:flex items-center space-x-6">
-          {!isInDashboard ? (
-            // Landing page navigation
-            <>
-              <Link href="/#features" className="text-sm text-gray-300 hover:text-white transition-colors">
-                Features
-              </Link>
-              <Link href="/#how-it-works" className="text-sm text-gray-300 hover:text-white transition-colors">
-                How it Works
-              </Link>
-              <Link href="/#benefits" className="text-sm text-gray-300 hover:text-white transition-colors">
-                Benefits
-              </Link>
-            </>
-          ) : (
-            // Dashboard navigation
-            <>
-              <Link href="/dashboard" className={`text-sm hover:text-white transition-colors ${pathname === '/dashboard' ? 'text-white' : 'text-gray-300'}`}>
-                Dashboard
-              </Link>
-              <Link href="/dashboard/deals" className={`text-sm hover:text-white transition-colors ${pathname === '/dashboard/deals' ? 'text-white' : 'text-gray-300'}`}>
-                All Deals
-              </Link>
-              <Link href="/dashboard/deals/create" className={`text-sm hover:text-white transition-colors ${pathname === '/dashboard/deals/create' ? 'text-white' : 'text-gray-300'}`}>
-                Create Deal
-              </Link>
-            </>
-          )}
-        </div>
-
-        <div className="flex items-center space-x-4">
-          {!isInDashboard ? (
-            <Link href="/connect-wallet">
-              <Button className="bg-accent-blue hover:bg-accent-blue/90">
-                <Wallet className="w-4 h-4 mr-2" />
-                Connect Wallet
-              </Button>
+    <nav className="bg-white shadow-md fixed w-full z-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between h-16">
+          <div className="flex items-center">
+            <Link href="/" className="flex-shrink-0 flex items-center">
+              <Shield className="h-8 w-8 text-blue-600" />
+              <span className="ml-2 text-xl font-bold text-black">ZSecretEscrow</span>
             </Link>
-          ) : (
-            <div className="flex items-center space-x-2">
-              <div className="w-2 h-2 rounded-full bg-green-400"></div>
-              <span className="text-sm">Connected</span>
+            <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
+              {navLinks.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium ${
+                    pathname === link.href
+                      ? "border-blue-500 text-gray-900"
+                      : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"
+                  }`}
+                >
+                  {link.label}
+                </Link>
+              ))}
             </div>
-          )}
-          
-          {/* Mobile menu button */}
-          <button 
-            className="md:hidden p-1" 
-            onClick={toggleMenu}
-            aria-label="Toggle menu"
-          >
-            {isMenuOpen ? (
-              <X className="w-6 h-6" />
-            ) : (
-              <Menu className="w-6 h-6" />
-            )}
-          </button>
+          </div>
+          <div className="hidden sm:ml-6 sm:flex sm:items-center">
+            <Button
+              onClick={handleWalletButton}
+              variant={isConnected ? "outline" : "default"}
+            >
+              {isConnected ? "Disconnect Wallet" : "Connect Wallet"}
+            </Button>
+          </div>
+          <div className="flex items-center sm:hidden">
+            <button
+              type="button"
+              className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500"
+              aria-controls="mobile-menu"
+              aria-expanded="false"
+              onClick={toggleMenu}
+            >
+              <span className="sr-only">Open main menu</span>
+              {isMenuOpen ? (
+                <X className="block h-6 w-6" aria-hidden="true" />
+              ) : (
+                <Menu className="block h-6 w-6" aria-hidden="true" />
+              )}
+            </button>
+          </div>
         </div>
       </div>
-      
-      {/* Mobile menu */}
+
       {isMenuOpen && (
-        <motion.div 
-          initial={{ opacity: 0, height: 0 }}
-          animate={{ opacity: 1, height: 'auto' }}
-          exit={{ opacity: 0, height: 0 }}
-          className="md:hidden bg-navy-dark/95 backdrop-blur-md border-b border-white/10"
-        >
-          <div className="container mx-auto px-4 py-4 flex flex-col space-y-4">
-            {!isInDashboard ? (
-              // Landing page navigation
-              <>
-                <Link href="/#features" className="text-sm py-2 text-gray-300 hover:text-white transition-colors" onClick={toggleMenu}>
-                  Features
-                </Link>
-                <Link href="/#how-it-works" className="text-sm py-2 text-gray-300 hover:text-white transition-colors" onClick={toggleMenu}>
-                  How it Works
-                </Link>
-                <Link href="/#benefits" className="text-sm py-2 text-gray-300 hover:text-white transition-colors" onClick={toggleMenu}>
-                  Benefits
-                </Link>
-              </>
-            ) : (
-              // Dashboard navigation
-              <>
-                <Link href="/dashboard" className="text-sm py-2 text-gray-300 hover:text-white transition-colors" onClick={toggleMenu}>
-                  Dashboard
-                </Link>
-                <Link href="/dashboard/deals" className="text-sm py-2 text-gray-300 hover:text-white transition-colors" onClick={toggleMenu}>
-                  All Deals
-                </Link>
-                <Link href="/dashboard/deals/create" className="text-sm py-2 text-gray-300 hover:text-white transition-colors" onClick={toggleMenu}>
-                  Create Deal
-                </Link>
-              </>
-            )}
+        <div className="sm:hidden" id="mobile-menu">
+          <div className="pt-2 pb-3 space-y-1">
+            {navLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className={`block pl-3 pr-4 py-2 border-l-4 text-base font-medium ${
+                  pathname === link.href
+                    ? "border-blue-500 text-blue-700 bg-blue-50"
+                    : "border-transparent text-gray-600 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-800"
+                }`}
+              >
+                {link.label}
+              </Link>
+            ))}
+            <div className="mt-4 px-4">
+              <Button
+                onClick={handleWalletButton}
+                variant={isConnected ? "outline" : "default"}
+                className="w-full"
+              >
+                {isConnected ? "Disconnect Wallet" : "Connect Wallet"}
+              </Button>
+            </div>
           </div>
-        </motion.div>
+        </div>
       )}
-    </motion.nav>
+    </nav>
   )
-}
+} 
