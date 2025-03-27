@@ -1,7 +1,7 @@
 # ZSecretEscrow 🔒
 
 <div align="center">
-   <img src="web/public/logo.png" alt="ZSecretEscrow Logo" width="200"/>
+   <img src="web/public/logo.jpeg" alt="ZSecretEscrow Logo" width="200"/>
    <p><em>Privacy-Preserving Escrow Platform on Zcash & NEAR</em></p>
    <p>
       <a href="#demo">Watch Demo</a> •
