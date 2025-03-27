@@ -1,0 +1,19 @@
+{
+  "name": "zsecretescrow-backend",
+  "version": "1.0.0",
+  "description": "Backend server for ZSecretEscrow platform",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "db:init": "node ./scripts/initDb.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "http-proxy-middleware": "^2.0.7",
+    "sqlite3": "^5.1.6"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
+}

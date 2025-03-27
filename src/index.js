@@ -229,4 +229,4 @@ function handleShutdown() {
 startServer().catch(error => {
   console.error('Failed to start ZSecretEscrow:', error);
   process.exit(1);
-}); 
+});

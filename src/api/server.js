@@ -14,6 +14,23 @@ const PORT = process.env.API_PORT || 3000;
 // Middleware
 app.use(cors());
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+
+// Import routes
+const balanceRouter = require('./routes/balance');
+const escrowRouter = require('./routes/escrow');
+const intentRouter = require('./routes/intent');
+const privacyRouter = require('./routes/privacy');
+const transactionsRouter = require('./routes/transactions');
+const userRouter = require('./routes/user');
+
+// Define routes
+app.use('/api/balance', balanceRouter);
+app.use('/api/escrow', escrowRouter);
+app.use('/api/intent', intentRouter);
+app.use('/api/privacy', privacyRouter);
+app.use('/api/transactions', transactionsRouter);
+app.use('/api/user', userRouter);
 
 // Database setup
 const dbPath = process.env.DB_PATH || path.join(__dirname, '../../data/zescrow.db');
@@ -166,7 +183,7 @@ const zcashService = {
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok', message: 'API server is running' });
+  res.status(200).json({ status: 'ok', message: 'API server is running' });
 });
 
 // ==================
@@ -497,6 +514,15 @@ app.post('/api/counter/increment', async (req, res) => {
   }
 });
 
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({
+    error: 'Internal Server Error',
+    message: process.env.NODE_ENV === 'development' ? err.message : 'Something went wrong'
+  });
+});
+
 // Starting the server
 async function startServer() {
   try {
@@ -512,4 +538,7 @@ async function startServer() {
   }
 }
 
-startServer().catch(console.error); 
+startServer().catch(console.error);
+
+// For testing purposes
+module.exports = { app, startServer };

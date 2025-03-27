@@ -187,7 +187,7 @@ cd src
 npm run dev
 
 # Frontend (in a new terminal)
-cd web
+cd web/src/client
 npm run dev
 ```
 
@@ -251,12 +251,14 @@ This will:
 
 ## 📸 Screenshots
 
-[Add screenshots of key features]
+<img src="web/public/image.png" alt="Running Service" width="900"/>
+
+### Running Service
 
 ## 🔧 Technical Stack
 
 ### Frontend
-- Next.js 14
+- Next.js 15
 - TypeScript
 - Tailwind CSS
 - Shadcn UI
@@ -278,20 +280,177 @@ This will:
 
 ### Core Endpoints
 
+#### Escrow Management
 ```typescript
-// Escrow Management
+// Create a new escrow agreement
 POST /api/escrow/create
+Request:
+{
+  "amount": "1.5",
+  "receiverAddress": "zs1...",
+  "deadlineTimestamp": 1678954321,
+  "terms": "Project delivery by specified date"
+}
+Response:
+{
+  "id": "esc-12345",
+  "status": "created",
+  "shieldedTxId": "txid..."
+}
+
+// Release funds from escrow
 POST /api/escrow/release
+Request:
+{
+  "escrowId": "esc-12345",
+  "proof": "base64encodedproof..."
+}
+Response:
+{
+  "success": true,
+  "txId": "txid..."
+}
+
+// Get escrow details
 GET /api/escrow/:id
+Response:
+{
+  "id": "esc-12345",
+  "amount": "1.5",
+  "status": "active",
+  "createdAt": "2023-06-15T10:30:00Z",
+  "deadline": "2023-07-15T10:30:00Z"
+}
+```
 
-// Intent Matching
+#### Intent Matching
+```typescript
+// Create a new intent
 POST /api/intent/create
-GET /api/intent/matches
-POST /api/intent/accept
+Request:
+{
+  "type": "service",
+  "category": "development",
+  "budget": "2.5",
+  "description": "Smart contract development",
+  "private": true
+}
+Response:
+{
+  "intentId": "int-67890",
+  "status": "pending"
+}
 
-// Privacy Features
+// Get matching intents
+GET /api/intent/matches
+Response:
+{
+  "matches": [
+    {
+      "intentId": "int-12345",
+      "category": "development",
+      "compatibility": 0.85,
+      "shieldedDetails": true
+    },
+    // More matches...
+  ]
+}
+
+// Accept an intent match
+POST /api/intent/accept
+Request:
+{
+  "matchId": "match-12345",
+  "proof": "base64encodedproof..."
+}
+Response:
+{
+  "success": true,
+  "escrowId": "esc-54321"
+}
+```
+
+#### Privacy Features
+```typescript
+// Shield a transaction
 POST /api/privacy/shield
+Request:
+{
+  "amount": "3.0",
+  "memo": "Payment for services"
+}
+Response:
+{
+  "success": true,
+  "shieldedTxId": "txid..."
+}
+
+// Generate zero-knowledge proof
 GET /api/privacy/proof
+Request:
+{
+  "type": "reputation",
+  "minimumScore": 4.5
+}
+Response:
+{
+  "proof": "base64encodedproof...",
+  "expiresAt": "2023-07-01T00:00:00Z"
+}
+```
+
+#### Balance & Transactions
+```typescript
+// Get user balance
+GET /api/balance
+Response:
+{
+  "balance": "5.25",
+  "pendingBalance": "1.5",
+  "shielded": true
+}
+
+// Get transaction history
+GET /api/transactions
+Response:
+{
+  "transactions": [
+    {
+      "id": "tx-12345",
+      "amount": "1.5",
+      "type": "deposit",
+      "timestamp": "2023-06-10T08:25:00Z",
+      "shielded": true
+    },
+    // More transactions...
+  ]
+}
+```
+
+#### User Profile
+```typescript
+// Get user profile
+GET /api/user/profile
+Response:
+{
+  "username": "user123",
+  "reputation": 4.8,
+  "completedEscrows": 12,
+  "shieldedIdentity": true
+}
+
+// Update user profile
+PATCH /api/user/profile
+Request:
+{
+  "displayName": "New Name",
+  "contactInfo": "encrypted-contact-data"
+}
+Response:
+{
+  "success": true,
+  "updated": ["displayName", "contactInfo"]
+}
 ```
 
 ## 🔐 Security Considerations

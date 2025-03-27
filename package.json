@@ -1,18 +1,17 @@
 {
   "name": "zsecretescrow",
-  "version": "0.1.0",
-  "description": "ZSecretEscrow - A private escrow system built on Zcash",
-  "main": "index.js",
+  "version": "1.0.0",
+  "description": "Privacy-Preserving Escrow Platform on Zcash & NEAR",
+  "main": "src/index.js",
+  "engines": {
+    "node": "18.x",
+    "npm": ">=8.0.0"
+  },
   "scripts": {
-    "deploy:zecvault": "node src/scripts/deploy_zecvault.js",
-    "deploy:escrow-intent": "node src/scripts/deploy_escrow_intent.js",
-    "start:zcash-monitor": "node src/services/zcash_monitor.js",
-    "example": "node src/examples/contracts_usage.js",
-    "init-db": "node src/database/init-db.js",
     "start": "node src/index.js",
-    "start:api": "node src/api/server.js",
-    "deploy": "node src/scripts/deploy.js",
-    "test": "mocha src/test/**/*.test.js"
+    "dev": "concurrently \"cd src && npm run dev\" \"cd web/src/client && npm run dev\"",
+    "db:init": "cd src && npm run db:init",
+    "preinstall": "node scripts/check-node-version.js"
   },
   "keywords": [
     "zcash",
@@ -33,6 +32,7 @@
     "body-parser": "^1.20.2",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "concurrently": "^8.2.0",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
     "ethers": "^6.8.1",
@@ -49,6 +49,7 @@
   },
   "devDependencies": {
     "chai": "^4.3.7",
+    "cross-env": "^7.0.3",
     "mocha": "^10.2.0"
   }
 }
