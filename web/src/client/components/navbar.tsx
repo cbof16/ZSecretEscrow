@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 import { usePathname } from "next/navigation"
 import { Button } from "./ui/button"
 import { Shield, Menu, X } from "lucide-react"
@@ -10,7 +11,8 @@ import { useWalletStore } from "../store/wallet-store"
 export function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const pathname = usePathname()
-  const { isConnected, connect, disconnect } = useWalletStore()
+  const router = useRouter()
+  const { isConnected, disconnect } = useWalletStore()
 
   const navLinks = [
     { href: "/", label: "Home" },
@@ -21,6 +23,14 @@ export function Navbar() {
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen)
+  }
+
+  const handleWalletButton = () => {
+    if (isConnected) {
+      disconnect()
+    } else {
+      router.push("/connect-wallet")
+    }
   }
 
   return (
@@ -50,7 +60,7 @@ export function Navbar() {
           </div>
           <div className="hidden sm:ml-6 sm:flex sm:items-center">
             <Button
-              onClick={isConnected ? disconnect : connect}
+              onClick={handleWalletButton}
               variant={isConnected ? "outline" : "default"}
             >
               {isConnected ? "Disconnect Wallet" : "Connect Wallet"}
@@ -93,7 +103,7 @@ export function Navbar() {
             ))}
             <div className="mt-4 px-4">
               <Button
-                onClick={isConnected ? disconnect : connect}
+                onClick={handleWalletButton}
                 variant={isConnected ? "outline" : "default"}
                 className="w-full"
               >
