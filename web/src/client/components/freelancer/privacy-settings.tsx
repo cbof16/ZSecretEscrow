@@ -3,7 +3,7 @@
 import { useState } from "react"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../ui/card"
 import { Button } from "../ui/button"
-import { Shield, Lock, Eye, EyeOff } from "lucide-react"
+import { Shield, Lock } from "lucide-react"
 import { Alert, AlertDescription, AlertTitle } from "../ui/alert"
 
 export function PrivacySettings() {
@@ -153,4 +153,4 @@ export function PrivacySettings() {
       </CardFooter>
     </Card>
   )
-} 
+}

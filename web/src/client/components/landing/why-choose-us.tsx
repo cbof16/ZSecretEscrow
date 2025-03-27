@@ -39,7 +39,7 @@ export function WhyChooseUs() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {features.map((feature, index) => (
+          {features.map((feature) => (
             <div
               key={feature.title}
               className="border border-gray-200 p-6 rounded-lg"
@@ -66,4 +66,4 @@ export function WhyChooseUs() {
       </div>
     </section>
   )
-} 
+}

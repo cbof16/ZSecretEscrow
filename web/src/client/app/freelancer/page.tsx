@@ -6,14 +6,9 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Button } from "../../components/ui/button"
 import { Navbar } from "../../components/navbar"
 import { 
-  LineChart, 
-  BarChart, 
   Wallet, 
   Clock, 
-  Settings, 
-  Shield, 
-  Bell, 
-  Activity 
+  Shield 
 } from "lucide-react"
 import { mockEscrowContracts } from "../../lib/mock/blockchain"
 import { ActivityCard } from "../../components/freelancer/activity-card"
@@ -357,4 +352,4 @@ export default function FreelancerDashboard() {
       </div>
     </div>
   )
-} 
+}

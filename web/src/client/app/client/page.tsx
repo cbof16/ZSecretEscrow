@@ -144,22 +144,22 @@ export default function ClientDashboard() {
     setTimeout(() => {
       const totalAmount = parseFloat(newEscrowData.totalAmount)
       
-      // Create milestone objects
-      const milestonesArray = newEscrowData.milestones.map((m, index) => ({
+      // Create milestone objects with proper typing
+      const milestonesArray: MilestoneType[] = newEscrowData.milestones.map((m, index) => ({
         id: `new-milestone-${Date.now()}-${index}`,
         title: m.title,
         description: m.description,
         amount: parseFloat(m.amount),
-        status: index === 0 ? 'active' : 'pending',
+        status: (index === 0 ? 'active' : 'pending') as 'pending' | 'active' | 'completed' | 'disputed',
         dueDate: m.dueDate
-      }))
+      }));
       
       // Create new escrow contract
-      const newEscrow = {
+      const newEscrow: EscrowContract = {
         id: `escrow-${Date.now()}`,
         title: newEscrowData.title,
         description: newEscrowData.description,
-        status: 'active',
+        status: "active" as "active" | "completed" | "disputed" | "cancelled",
         value: totalAmount,
         currency: newEscrowData.currency,
         clientId: 'you.near',
@@ -265,7 +265,7 @@ export default function ClientDashboard() {
               <Card>
                 <CardHeader>
                   <CardTitle>No Active Escrows</CardTitle>
-                  <CardDescription>You don't have any active escrow contracts yet.</CardDescription>
+                  <CardDescription>You don&apos;t have any active escrow contracts yet.</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <Button onClick={() => setActiveTab("create")}>
@@ -326,7 +326,7 @@ export default function ClientDashboard() {
                     <div className="mt-6 mb-4">
                       <h4 className="text-sm font-medium mb-2">Milestones</h4>
                       <div className="space-y-3">
-                        {escrow.milestones.map((milestone, index) => (
+                        {escrow.milestones.map((milestone) => (
                           <div 
                             key={milestone.id} 
                             className={`p-3 rounded-lg border ${
@@ -402,7 +402,7 @@ export default function ClientDashboard() {
               <Card>
                 <CardHeader>
                   <CardTitle>No Completed Escrows</CardTitle>
-                  <CardDescription>You haven't completed any escrow contracts yet.</CardDescription>
+                  <CardDescription>You haven&apos;t completed any escrow contracts yet.</CardDescription>
                 </CardHeader>
               </Card>
             ) : (
@@ -666,4 +666,4 @@ export default function ClientDashboard() {
       </div>
     </div>
   )
-} 
+}
