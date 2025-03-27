@@ -1,14 +1,14 @@
 # ZSecretEscrow 🔒
 
 <div align="center">
-  <img src="web/public/logo.png" alt="ZSecretEscrow Logo" width="200"/>
-  <p><em>Privacy-Preserving Escrow Platform on Zcash & NEAR</em></p>
-  <p>
-    <a href="#demo">Watch Demo</a> •
-    <a href="#architecture">Architecture</a> •
-    <a href="#contracts">Contracts</a> •
-    <a href="#getting-started">Get Started</a>
-  </p>
+   <img src="web/public/logo.png" alt="ZSecretEscrow Logo" width="200"/>
+   <p><em>Privacy-Preserving Escrow Platform on Zcash & NEAR</em></p>
+   <p>
+      <a href="#demo">Watch Demo</a> •
+      <a href="#architecture">Architecture</a> •
+      <a href="#contracts">Contracts</a> •
+      <a href="#getting-started">Get Started</a>
+   </p>
 </div>
 
 ## 🏆 Zcash x NEAR Hackathon Submission
@@ -28,77 +28,77 @@ ZSecretEscrow is a groundbreaking privacy-preserving escrow platform that levera
 
 ```mermaid
 graph TB
-    subgraph Frontend
-        UI[Web Interface]
-        Wallet[Wallet Integration]
-        ZK[Zero-Knowledge Proofs]
-        UI --> Wallet
-        UI --> ZK
-        Wallet --> ZK
-    end
+      subgraph Frontend
+            UI[Web Interface]
+            Wallet[Wallet Integration]
+            ZK[Zero-Knowledge Proofs]
+            UI --> Wallet
+            UI --> ZK
+            Wallet --> ZK
+      end
 
-    subgraph Backend
-        API[API Server]
-        DB[(SQLite Database)]
-        Monitor[Transaction Monitor]
-        API --> DB
-        API --> Monitor
-    end
+      subgraph Backend
+            API[API Server]
+            DB[(SQLite Database)]
+            Monitor[Transaction Monitor]
+            API --> DB
+            API --> Monitor
+      end
 
-    subgraph Blockchain
-        ZCASH[Zcash Network]
-        NEAR[NEAR Network]
-        ZECVault[ZecVault Contract]
-        Intent[Intent Contract]
-        Monitor --> ZCASH
-        Monitor --> NEAR
-        API --> ZECVault
-        API --> Intent
-    end
+      subgraph Blockchain
+            ZCASH[Zcash Network]
+            NEAR[NEAR Network]
+            ZECVault[ZecVault Contract]
+            Intent[Intent Contract]
+            Monitor --> ZCASH
+            Monitor --> NEAR
+            API --> ZECVault
+            API --> Intent
+      end
 
-    subgraph Privacy Layer
-        Shield[Shielded Transactions]
-        Proof[Zero-Knowledge Proofs]
-        Match[Private Matching]
-        ZK --> Shield
-        ZK --> Proof
-        API --> Match
-    end
+      subgraph Privacy Layer
+            Shield[Shielded Transactions]
+            Proof[Zero-Knowledge Proofs]
+            Match[Private Matching]
+            ZK --> Shield
+            ZK --> Proof
+            API --> Match
+      end
 
-    Shield --> ZCASH
-    Proof --> NEAR
-    Match --> Intent
+      Shield --> ZCASH
+      Proof --> NEAR
+      Match --> Intent
 ```
 
 ### Core Components
 
 1. **Frontend Layer**
-   - Next.js web application
-   - Wallet integration (Y Wallet, Zingo, Zashi)
-   - Zero-knowledge proof generation
-   - Privacy-preserving UI components
+    - Next.js web application
+    - Wallet integration (Y Wallet, Zingo, Zashi)
+    - Zero-knowledge proof generation
+    - Privacy-preserving UI components
 
 2. **Backend Services**
-   - Node.js API server
-   - SQLite database
-   - Transaction monitoring service
-   - Intent matching system
+    - Node.js API server
+    - SQLite database
+    - Transaction monitoring service
+    - Intent matching system
 
 3. **Blockchain Integration**
-   - Zcash shielded transactions
-   - NEAR smart contracts
-   - Cross-chain communication
+    - Zcash shielded transactions
+    - NEAR smart contracts
+    - Cross-chain communication
 
 4. **Privacy Layer**
-   - Shielded transaction handling
-   - Zero-knowledge proof generation
-   - Private intent matching
-   - Cross-chain verification
+    - Shielded transaction handling
+    - Zero-knowledge proof generation
+    - Private intent matching
+    - Cross-chain verification
 
 ## 📜 Smart Contracts
 
 ### ZecVault Contract (Base Sepolia)
-[View Contract Code](./src/contracts/ZecVault.sol)
+[View Contract Code](https://github.com/cbof16/ZSecretEscrow/tree/main/web/src/contracts/evm)
 ```solidity
 Address: 0xD6D0F20D055748302877a2a635a22F5dD0d0433D
 ```
@@ -110,7 +110,7 @@ Key Functions:
 - `releaseFunds`: Release funds to recipient
 
 ### Intent Contract (NEAR)
-[View Contract Code](./src/contracts/intent-contract/src/lib.rs)
+[View Contract Code](https://github.com/cbof16/ZSecretEscrow/tree/main/web/src/contracts/near)
 ```rust
 Account: escrow-intent.cbof.testnet
 ```
@@ -133,7 +133,7 @@ Key Functions:
 ### Quick Start
 ```bash
 # Clone and install
-git clone https://github.com/yourusername/ZSecretEscrow.git
+git clone https://github.com/cbof16/ZSecretEscrow.git
 cd ZSecretEscrow
 npm install
 
@@ -148,7 +148,7 @@ npm run start
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/ZSecretEscrow.git
+git clone https://github.com/cbof16/ZSecretEscrow.git
 cd ZSecretEscrow
 ```
 
@@ -235,19 +235,19 @@ This will:
 ### Key Demo Scenarios
 
 1. **Private Escrow Creation**
-   - Create shielded escrow
-   - Generate zero-knowledge proof
-   - Verify on-chain
+    - Create shielded escrow
+    - Generate zero-knowledge proof
+    - Verify on-chain
 
 2. **Intent Matching**
-   - Create private intent
-   - Match with compatible parties
-   - Verify matches privately
+    - Create private intent
+    - Match with compatible parties
+    - Verify matches privately
 
 3. **Shielded Payments**
-   - Receive private payments
-   - Track shielded earnings
-   - View private transaction history
+    - Receive private payments
+    - Track shielded earnings
+    - View private transaction history
 
 ## 📸 Screenshots
 
@@ -324,5 +324,5 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ---
 
 <div align="center">
-  <p>Built with ❤️ for the Zcash x NEAR Hackathon</p>
+   <p>Built with ❤️ for the Zcash x NEAR Hackathon</p>
 </div>
