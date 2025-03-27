@@ -1,38 +1,32 @@
-import './globals.css';
-import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
-import { ThemeProvider } from '@/components/theme-provider';
-import { WalletProvider } from '@/lib/wallet-context';
-import { ToastContainer } from '@/components/ui/use-toast';
+import type { Metadata } from "next"
+import { Inter } from "next/font/google"
+import "./globals.css"
+import { ThemeProvider } from "../components/theme-provider"
 
-const inter = Inter({ subsets: ['latin'] });
+const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: 'ZSecretEscrow - Secure Cross-Chain Transactions',
-  description: 'Privacy-focused cryptocurrency escrow platform with smart contract protection',
-};
+  title: "ZSecretEscrow - Privacy-first escrow for Zcash",
+  description: "Secure, private escrow service using Zcash's shielded transactions and smart contracts",
+}
 
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode;
+  children: React.ReactNode
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${inter.className} min-h-screen bg-background text-white antialiased`}>
+      <body className={inter.className}>
         <ThemeProvider
           attribute="class"
           defaultTheme="dark"
-          enableSystem={false}
-          storageKey="crypto-escrow-theme"
+          enableSystem
+          disableTransitionOnChange
         >
-          <WalletProvider>
-            <ToastContainer>
-              {children}
-            </ToastContainer>
-          </WalletProvider>
+          {children}
         </ThemeProvider>
       </body>
     </html>
-  );
-}
+  )
+} 

@@ -149,7 +149,7 @@ function startNextDevelopmentServer() {
 function createApiProxy() {
   const { createProxyMiddleware } = require('http-proxy-middleware');
   
-  return createProxyMiddleware('/api', {
+  return createProxyMiddleware({
     target: `http://localhost:${API_PORT}`,
     changeOrigin: true,
     pathRewrite: {
@@ -163,7 +163,7 @@ function createApiProxy() {
 function createFrontendProxy() {
   const { createProxyMiddleware } = require('http-proxy-middleware');
   
-  return createProxyMiddleware('/', {
+  return createProxyMiddleware({
     target: `http://localhost:${FRONTEND_PORT}`,
     changeOrigin: true,
     ws: true,

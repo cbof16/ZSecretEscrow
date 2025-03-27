@@ -1,237 +1,328 @@
-# ZSecretEscrow
+# ZSecretEscrow 🔒
 
-A privacy-focused escrow system built on Zcash with cross-chain integration for Base Sepolia and NEAR blockchains.
+<div align="center">
+  <img src="web/public/logo.png" alt="ZSecretEscrow Logo" width="200"/>
+  <p><em>Privacy-Preserving Escrow Platform on Zcash & NEAR</em></p>
+  <p>
+    <a href="#demo">Watch Demo</a> •
+    <a href="#architecture">Architecture</a> •
+    <a href="#contracts">Contracts</a> •
+    <a href="#getting-started">Get Started</a>
+  </p>
+</div>
 
-## Overview
+## 🏆 Zcash x NEAR Hackathon Submission
 
-ZSecretEscrow allows clients and freelancers to securely transact using Zcash for privacy, with escrow functionality handled through smart contracts on Base Sepolia and NEAR Protocol.
+ZSecretEscrow is a groundbreaking privacy-preserving escrow platform that leverages the power of Zcash's shielded transactions and NEAR's smart contracts to create a secure, private, and efficient escrow service. Built for the Zcash x NEAR Hackathon, this project demonstrates the potential of cross-chain privacy solutions in DeFi.
 
-## Features
+## 🌟 Key Features
 
-- **Privacy-focused payments**: Uses Zcash for private payments
-- **Cross-chain integration**: Connects Zcash with Base Sepolia and NEAR Protocol
-- **Secure escrow**: Funds are locked in smart contracts during the deal lifecycle
-- **Dispute resolution**: Built-in process for resolving disputes
-- **Workload verification**: Review and approve completed work before releasing funds
+- **Zero-Knowledge Escrow**: Leverages Zcash's shielded transactions for private fund management
+- **Smart Contract Integration**: NEAR smart contracts for escrow logic and intent matching
+- **Privacy-Preserving Identity**: Shielded addresses and private reputation system
+- **Cross-Chain Compatibility**: Seamless integration between Zcash and NEAR
+- **Intent Matching System**: Privacy-preserving matching of clients and freelancers
+- **Shielded Payments**: Private transaction history and earnings tracking
 
-## System Architecture
+## 🏗️ Architecture
 
-The system consists of several key components:
+```mermaid
+graph TB
+    subgraph Frontend
+        UI[Web Interface]
+        Wallet[Wallet Integration]
+        ZK[Zero-Knowledge Proofs]
+        UI --> Wallet
+        UI --> ZK
+        Wallet --> ZK
+    end
 
-1. **Zcash Integration**: Handles Zcash wallet management and transactions
-2. **ZecVault Contract (EVM)**: Smart contract deployed on Base Sepolia for handling escrow
-3. **EscrowIntent Contract (NEAR)**: Smart contract deployed on NEAR for intent management
-4. **Escrow Service**: Coordinates between blockchain components
-5. **Database**: SQLite database for storing deal and transaction information
-6. **API Server**: Exposes RESTful endpoints for client applications
-7. **Frontend**: React-based user interface for interacting with the system
+    subgraph Backend
+        API[API Server]
+        DB[(SQLite Database)]
+        Monitor[Transaction Monitor]
+        API --> DB
+        API --> Monitor
+    end
 
-## Installation
+    subgraph Blockchain
+        ZCASH[Zcash Network]
+        NEAR[NEAR Network]
+        ZECVault[ZecVault Contract]
+        Intent[Intent Contract]
+        Monitor --> ZCASH
+        Monitor --> NEAR
+        API --> ZECVault
+        API --> Intent
+    end
+
+    subgraph Privacy Layer
+        Shield[Shielded Transactions]
+        Proof[Zero-Knowledge Proofs]
+        Match[Private Matching]
+        ZK --> Shield
+        ZK --> Proof
+        API --> Match
+    end
+
+    Shield --> ZCASH
+    Proof --> NEAR
+    Match --> Intent
+```
+
+### Core Components
+
+1. **Frontend Layer**
+   - Next.js web application
+   - Wallet integration (Y Wallet, Zingo, Zashi)
+   - Zero-knowledge proof generation
+   - Privacy-preserving UI components
+
+2. **Backend Services**
+   - Node.js API server
+   - SQLite database
+   - Transaction monitoring service
+   - Intent matching system
+
+3. **Blockchain Integration**
+   - Zcash shielded transactions
+   - NEAR smart contracts
+   - Cross-chain communication
+
+4. **Privacy Layer**
+   - Shielded transaction handling
+   - Zero-knowledge proof generation
+   - Private intent matching
+   - Cross-chain verification
+
+## 📜 Smart Contracts
+
+### ZecVault Contract (Base Sepolia)
+[View Contract Code](./src/contracts/ZecVault.sol)
+```solidity
+Address: 0xD6D0F20D055748302877a2a635a22F5dD0d0433D
+```
+
+Key Functions:
+- `deposit`: Shielded deposit of ZEC
+- `withdraw`: Private withdrawal with zero-knowledge proof
+- `createEscrow`: Initialize new escrow agreement
+- `releaseFunds`: Release funds to recipient
+
+### Intent Contract (NEAR)
+[View Contract Code](./src/contracts/intent-contract/src/lib.rs)
+```rust
+Account: escrow-intent.cbof.testnet
+```
+
+Key Functions:
+- `createIntent`: Create new intent for matching
+- `matchIntent`: Privacy-preserving intent matching
+- `verifyProof`: Verify zero-knowledge proofs
+- `updateStatus`: Update intent status
+
+## 🚀 Getting Started
 
 ### Prerequisites
+- Node.js v18+
+- Rust toolchain
+- NEAR CLI
+- Zcash lightwalletd
+- SQLite3
 
-- Node.js 16+ 
-- npm or yarn
-- Access to Base Sepolia and NEAR testnets
-- Zcash testnet access
+### Quick Start
+```bash
+# Clone and install
+git clone https://github.com/yourusername/ZSecretEscrow.git
+cd ZSecretEscrow
+npm install
 
-### Setup
+# Initialize database
+npm run db:init
+
+# Start the application
+npm run start
+```
+
+### Detailed Setup
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/zsecretescrow.git
-cd zsecretescrow
+git clone https://github.com/yourusername/ZSecretEscrow.git
+cd ZSecretEscrow
 ```
 
 2. Install dependencies:
 ```bash
+# Frontend
+cd web
+npm install
+
+# Backend
+cd ../src
 npm install
 ```
 
-3. Create environment file:
+3. Configure environment:
 ```bash
 cp .env.example .env
+# Update .env with your configuration
 ```
 
-4. Edit the `.env` file with your configuration
-```
-# API Configuration
-API_PORT=3000
-FRONTEND_PORT=3001
-PORT=8080
-DB_PATH=./data/zescrow.db
-
-# NEAR Configuration
-NEAR_NETWORK=testnet
-NEAR_NODE_URL=https://rpc.testnet.near.org
-NEAR_ACCOUNT_ID=your-account.testnet
-NEAR_PRIVATE_KEY=ed25519:your_private_key
-ESCROW_INTENT_ID=your-account.testnet
-
-# Base Sepolia Configuration
-BASE_SEPOLIA_RPC_URL=https://sepolia.base.org
-ZECVAULT_ADDRESS=0xYourContractAddress
-PRIVATE_KEY=your_ethereum_private_key
-
-# Zcash Configuration
-ZCASH_NODE_URL=https://testnet.lightwalletd.com:9067
-ZCASH_WALLET_API_URL=http://localhost:7000
-ZCASH_MONITOR_INTERVAL=60000
-```
-
-5. Initialize the database:
+4. Initialize database:
 ```bash
-npm run init-db
+# From the src directory
+npm run db:init
+# This will create the database and run migrations
 ```
 
-6. Deploy contracts (if not already deployed):
+5. Start the application:
 ```bash
-npm run deploy:zecvault
-npm run deploy:escrow-intent
+# Start both frontend and backend
+npm run start
+
+# Or start them separately:
+# Backend
+cd src
+npm run dev
+
+# Frontend (in a new terminal)
+cd web
+npm run dev
 ```
 
-## Usage
-### Start the Complete Application
+6. Access the application:
+```
+http://localhost:3000
+```
 
-To run both the API server and frontend in a single command:
+### Database Initialization
+The application requires a SQLite database to be initialized before first use. This database stores:
+- User profiles
+- Escrow agreements
+- Transaction history
+- Intent matching data
 
+Run the following commands to initialize the database:
 ```bash
-npm start
+cd src
+npm run db:init
 ```
 
-Access the application at http://localhost:8080
+This will:
+1. Create the SQLite database file
+2. Run all migrations
+3. Seed initial data if needed
 
-### Start Components Separately
+## 🔒 Privacy Features
 
-You can also run the components separately:
+### Zero-Knowledge Proofs
+- Shielded transaction amounts
+- Private reputation scores
+- Confidential escrow details
+- Hidden payment history
 
-```bash
-# Start the API Server only
-npm run start:api
+### Shielded Addresses
+- Private wallet addresses
+- Untraceable transactions
+- Confidential user profiles
+- Hidden activity history
 
-# Start the Frontend only
-npm run start:frontend
+## 🎥 Demo
 
-# Start the Zcash transaction monitor
-npm run start:zcash-monitor
+[Demo Video Link]
+
+### Key Demo Scenarios
+
+1. **Private Escrow Creation**
+   - Create shielded escrow
+   - Generate zero-knowledge proof
+   - Verify on-chain
+
+2. **Intent Matching**
+   - Create private intent
+   - Match with compatible parties
+   - Verify matches privately
+
+3. **Shielded Payments**
+   - Receive private payments
+   - Track shielded earnings
+   - View private transaction history
+
+## 📸 Screenshots
+
+[Add screenshots of key features]
+
+## 🔧 Technical Stack
+
+### Frontend
+- Next.js 14
+- TypeScript
+- Tailwind CSS
+- Shadcn UI
+- Zero-knowledge proof generation
+
+### Backend
+- Node.js
+- Express
+- SQLite
+- NEAR Protocol SDK
+- Zcash lightwalletd
+
+### Blockchain
+- Zcash (shielded transactions)
+- NEAR Protocol (smart contracts)
+- Base Sepolia (ZecVault)
+
+## 📚 API Documentation
+
+### Core Endpoints
+
+```typescript
+// Escrow Management
+POST /api/escrow/create
+POST /api/escrow/release
+GET /api/escrow/:id
+
+// Intent Matching
+POST /api/intent/create
+GET /api/intent/matches
+POST /api/intent/accept
+
+// Privacy Features
+POST /api/privacy/shield
+GET /api/privacy/proof
 ```
 
-### API Documentation
+## 🔐 Security Considerations
 
-#### Health Check
-- `GET /api/health` - Check API server status
+- Zero-knowledge proofs for all sensitive operations
+- Shielded transactions for fund management
+- Private reputation system
+- Secure key management
+- Cross-chain verification
 
-#### Wallets
-- `POST /api/wallets` - Create a new wallet
-  - Request body: `{ "userId": "user123" }`
-  - Response: `{ "id": 1, "userId": "user123", "address": "zs1...", "blockchain": "zcash" }`
+## 🤝 Contributing
 
-- `GET /api/wallets/:userId` - Get wallet information
-  - Response: `{ "id": 1, "user_id": "user123", "address": "zs1...", "blockchain": "zcash", "created_at": "..." }`
+1. Fork the repository
+2. Create your feature branch
+3. Commit your changes
+4. Push to the branch
+5. Create a Pull Request
 
-#### Deals
-- `POST /api/deals` - Create a new deal
-  - Request body: 
-    ```json
-    { 
-      "clientId": "client123", 
-      "freelancerId": "freelancer456", 
-      "title": "Website Development", 
-      "description": "Create a landing page", 
-      "amount": 100
-    }
-    ```
-  - Response: Deal object with status and transaction hash
+## 📝 License
 
-- `GET /api/deals/:dealId` - Get deal information
-  - Response: Complete deal object with all fields
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-- `GET /api/users/:userId/deals` - Get all deals for a user
-  - Response: Array of deal objects for the specified user (as client or freelancer)
+## 🙏 Acknowledgments
 
-#### Work Submission/Approval
-- `POST /api/deals/:dealId/submit` - Submit work for review
-  - Request body: 
-    ```json
-    { 
-      "workUrl": "https://github.com/user/project", 
-      "comments": "Completed as requested" 
-    }
-    ```
-  - Response: Confirmation with updated deal status
+- Zcash Foundation
+- NEAR Protocol
+- Base Protocol
+- All contributors and supporters
 
-- `POST /api/deals/:dealId/approve` - Approve submitted work
-  - Request body: 
-    ```json
-    { 
-      "reviewComments": "Work looks good!" 
-    }
-    ```
-  - Response: Confirmation with transaction hash
+---
 
-- `POST /api/deals/:dealId/dispute` - Dispute submitted work
-  - Request body: 
-    ```json
-    { 
-      "disputeReason": "Work does not meet requirements" 
-    }
-    ```
-  - Response: Confirmation with updated deal status
-
-#### Counter (Test Endpoints)
-- `GET /api/counter` - Get counter value
-  - Response: `{ "count": 3 }`
-
-- `POST /api/counter/increment` - Increment counter
-  - Response: Confirmation with transaction hash
-
-## Development
-
-### Database Schema
-
-The application uses SQLite with the following tables:
-
-1. **wallets**
-   - id (PRIMARY KEY)
-   - user_id
-   - address
-   - blockchain
-   - created_at
-
-2. **deals**
-   - id (PRIMARY KEY)
-   - client_id
-   - freelancer_id
-   - title
-   - description
-   - amount
-   - intent_id
-   - eth_escrow_id
-   - status
-   - work_url
-   - submission_comments
-   - review_comments
-   - dispute_reason
-   - created_at
-   - updated_at
-
-### Testing
-
-Run the example workflow:
-```bash
-npm run example
-```
-
-### Monitor Zcash Transactions
-
-```bash
-npm run start:zcash-monitor
-```
-
-## For more detailed setup instructions
-
-See [SETUP.md](SETUP.md) for more detailed setup and configuration instructions.
-
-## License
-
-MIT
+<div align="center">
+  <p>Built with ❤️ for the Zcash x NEAR Hackathon</p>
+</div>
