@@ -112,7 +112,7 @@ Key Functions:
 ### Intent Contract (NEAR)
 [View Contract Code](https://github.com/cbof16/ZSecretEscrow/tree/main/web/src/contracts/near)
 ```rust
-Account: escrow-intent.cbof.testnet
+Account: cbof.testnet
 ```
 
 Key Functions:
