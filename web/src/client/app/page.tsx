@@ -7,7 +7,7 @@ import { Navbar } from "../components/navbar"
 
 export default function LandingPage() {
   return (
-    <main className="min-h-screen bg-background mesh-gradient overflow-hidden">
+    <main className="min-h-screen gradient-hero overflow-hidden">
       <Navbar />
       <Hero />
       <Stats />

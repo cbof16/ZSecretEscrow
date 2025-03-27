@@ -15,11 +15,55 @@ import { Calendar, CheckCircle2, Clock, AlertTriangle, ExternalLink, PlusCircle,
 import { mockEscrowContracts } from "../../lib/mock/blockchain"
 import { useWalletStore } from "../../store/wallet-store"
 
+// Define milestone interface
+interface Milestone {
+  title: string;
+  description: string;
+  amount: string;
+  dueDate: string;
+}
+
+// Define escrow data interface
+interface NewEscrowData {
+  title: string;
+  description: string;
+  freelancerAddress: string;
+  totalAmount: string;
+  currency: "ZEC" | "NEAR";
+  milestones: Milestone[];
+}
+
+// Add more interfaces at the top of the file after the existing interfaces
+interface MilestoneType {
+  id: string;
+  title: string;
+  description: string;
+  amount: number;
+  status: 'pending' | 'active' | 'completed' | 'disputed';
+  dueDate: string;
+}
+
+interface EscrowContract {
+  id: string;
+  title: string;
+  description: string;
+  status: 'active' | 'completed' | 'disputed' | 'cancelled';
+  value: number;
+  currency: 'ZEC' | 'NEAR';
+  clientId: string;
+  clientName: string;
+  freelancerId: string;
+  freelancerName: string;
+  created: string;
+  updated: string;
+  milestones: MilestoneType[];
+}
+
 export default function ClientDashboard() {
   const router = useRouter()
   const { isConnected } = useWalletStore()
   const [activeTab, setActiveTab] = useState("active")
-  const [newEscrowData, setNewEscrowData] = useState({
+  const [newEscrowData, setNewEscrowData] = useState<NewEscrowData>({
     title: "",
     description: "",
     freelancerAddress: "",
@@ -30,7 +74,7 @@ export default function ClientDashboard() {
     ]
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [demoEscrows, setDemoEscrows] = useState([...mockEscrowContracts])
+  const [demoEscrows, setDemoEscrows] = useState<EscrowContract[]>([...mockEscrowContracts])
 
   // Filter contracts for client view
   const filteredEscrows = {
@@ -47,7 +91,7 @@ export default function ClientDashboard() {
   }, [isConnected, router])
 
   // Handle creating a new milestone
-  const addMilestone = () => {
+  const addMilestone = (): void => {
     setNewEscrowData({
       ...newEscrowData,
       milestones: [
@@ -58,7 +102,7 @@ export default function ClientDashboard() {
   }
 
   // Handle removing a milestone
-  const removeMilestone = (index) => {
+  const removeMilestone = (index: number): void => {
     if (newEscrowData.milestones.length > 1) {
       const updatedMilestones = [...newEscrowData.milestones]
       updatedMilestones.splice(index, 1)
@@ -70,7 +114,7 @@ export default function ClientDashboard() {
   }
 
   // Handle milestone field changes
-  const handleMilestoneChange = (index, field, value) => {
+  const handleMilestoneChange = (index: number, field: keyof Milestone, value: string): void => {
     const updatedMilestones = [...newEscrowData.milestones]
     updatedMilestones[index] = {
       ...updatedMilestones[index],
@@ -83,7 +127,7 @@ export default function ClientDashboard() {
   }
 
   // Handle form input changes
-  const handleInputChange = (e) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>): void => {
     const { name, value } = e.target
     setNewEscrowData({
       ...newEscrowData,
@@ -92,7 +136,7 @@ export default function ClientDashboard() {
   }
 
   // Create new escrow contract (demo)
-  const handleCreateEscrow = (e) => {
+  const handleCreateEscrow = (e: React.FormEvent<HTMLFormElement>): void => {
     e.preventDefault()
     setIsSubmitting(true)
     
@@ -149,32 +193,32 @@ export default function ClientDashboard() {
   }
 
   // Get progress percentage for an escrow
-  const getEscrowProgress = (escrow) => {
+  const getEscrowProgress = (escrow: EscrowContract): number => {
     const totalMilestones = escrow.milestones.length
     const completedMilestones = escrow.milestones.filter(m => m.status === 'completed').length
     return Math.round((completedMilestones / totalMilestones) * 100)
   }
 
   // Format date for display
-  const formatDate = (dateString) => {
+  const formatDate = (dateString: string): string => {
     const date = new Date(dateString)
     return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })
   }
   
   // Handle release payment for a milestone (demo)
-  const handleReleasePayment = (escrowId, milestoneId) => {
+  const handleReleasePayment = (escrowId: string, milestoneId: string): void => {
     // Update the milestone status
     const updatedEscrows = demoEscrows.map(escrow => {
       if (escrow.id === escrowId) {
         const updatedMilestones = escrow.milestones.map(milestone => {
           if (milestone.id === milestoneId) {
-            return { ...milestone, status: 'completed' }
+            return { ...milestone, status: 'completed' as const }
           }
           
           // Activate the next pending milestone
           if (milestone.status === 'pending' && 
               escrow.milestones.some(m => m.id === milestoneId && m.status !== 'pending')) {
-            return { ...milestone, status: 'active' }
+            return { ...milestone, status: 'active' as const }
           }
           
           return milestone
@@ -186,7 +230,7 @@ export default function ClientDashboard() {
         return { 
           ...escrow, 
           milestones: updatedMilestones,
-          status: allCompleted ? 'completed' : 'active',
+          status: allCompleted ? 'completed' as const : 'active' as const,
           updated: new Date().toISOString()
         }
       }
